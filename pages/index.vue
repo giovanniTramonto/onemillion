@@ -17,10 +17,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
-      data: require('~/assets/data/onemilliondollar.json'),
+      data: {},
       items: [],
       search: '',
       page: '',
@@ -30,11 +32,22 @@ export default {
   },
 
   created () {
-    this.items = Object.keys(this.data).map((k) => this.data[k])
-    this.dollars = this.items
+    this.getDollars()
+      .then(this.set)
+      .catch(error => {
+        console.warn(error)
+      })
   },
 
   methods: {
+    async getDollars () {
+      let dollars = await axios.get('data/onemilliondollar.json')
+      this.data = dollars.data
+    },
+    set () {
+      this.items = Object.keys(this.data).map((k) => this.data[k])
+      this.dollars = this.items
+    },
     setPage (p) {
       this.page = p
     },
@@ -96,13 +109,17 @@ export default {
   font-weight: 300;
   font-size: 10px;
 }
-.filter {
-  border: none;
-  background: black;
-  color: white;
+input[type=text].filter {
+  width: 200px;
+  color: black;
   padding: .3em .5em;
   ::placeholder {
     color: white;
+  }
+  &,
+  &:hover, 
+  &:focus {
+    border: 1px solid black;
   }
 }
 </style>
