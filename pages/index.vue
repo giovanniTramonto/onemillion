@@ -6,7 +6,7 @@
     <section :class="$style.section">
       <ul :class="$style.list">
         <li :class="$style.item" v-for="dollar in dollars" @mouseover="setPage(dollar.page)">
-          <a href :class="$style.number">{{dollar.key}}</a>
+          <span :class="$style.number">{{dollar.key}}</span>
         </li>
       </ul>
     </section>
@@ -65,7 +65,10 @@ export default {
 }
 </script>
 
-<style module>
+<style lang="scss" module>
+body {
+  font-family: 'Courier New', 'Open Sans Condensed', sans-serif;
+}
 .page {
   margin: 5em 2em;
 }
@@ -85,7 +88,6 @@ export default {
 .item {
   flex-basis: 110px;
   margin: 5px;
-  text-align: center;
 }
 .number {
   font-size: 15px;
@@ -93,6 +95,7 @@ export default {
   &:hover,
   &:active {
     color: red;
+    cursor: crosshair;
   }
 }
 .footer {
@@ -109,7 +112,7 @@ export default {
   font-weight: 300;
   font-size: 10px;
 }
-input[type=text].filter {
+input.filter {
   width: 200px;
   color: black;
   padding: .3em .5em;
@@ -119,7 +122,38 @@ input[type=text].filter {
   &,
   &:hover, 
   &:focus {
-    border: 1px solid black;
+    border: 1px solid rgb(80,80,80);
+  }
+}
+
+@media (max-width: 460px) {
+  .page {
+    margin: 0 1em;
+  }
+  .header {
+    padding: 2em 1em 0;
+    position: fixed;
+    right: 0;
+    left: 0;
+  }
+  .section {
+    padding: 6em 0 25em;
+  }
+  .list {
+    flex-direction: column;
+  }
+  .item {
+    flex-basis: auto;
+  }
+  .number {
+    font-size: 11vw;
+  }
+  .footer {
+    padding: 1em;
+  }
+  input.filter {
+    width: 100%;
+    font-size: 20px;
   }
 }
 </style>

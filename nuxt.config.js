@@ -8,7 +8,14 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'OneMillionDollar' }
+      { name: 'robots', content: 'index, follow' },
+      { name: 'description', content: 'SASCHA HUNDORFF – OneMillionDollarBook' },
+      { name: 'author', content: 'SASCHA HUNDORFF' },
+      { name: 'publisher', content: 'SASCHA HUNDORFF' },
+      { name: 'language', content: 'de' },
+      { name: 'company', content: 'onemilliondollarbook.com' },
+      { name: 'page-topic', content: 'onemilliondollarbook' },
+      { name: 'keywords', content: 'million dollar, Sascha Hundorff, book, photography, contemporary art, german, publishing' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -43,5 +50,8 @@ module.exports = {
   },
   css: [
     '@/assets/scss/styles.scss'
+  ],
+  plugins: [
+    { src: '~plugins/ga.js', ssr: false }
   ]
 }
