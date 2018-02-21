@@ -46,8 +46,8 @@ module.exports = {
       require('autoprefixer')({
         browsers: ['> 5%']
       })
-    ],
-    publicPath: 'onemillion/'
+    ]
+    // , publicPath: 'onemillion/'
   },
   css: [
     '@/assets/scss/styles.scss'

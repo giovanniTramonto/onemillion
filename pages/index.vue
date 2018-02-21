@@ -2,17 +2,16 @@
   <div :class="$style.page">
     <div :class="$style.header">
       <input :class="$style.filter" type="text" v-model="search" @keyup="filter()" placeholder="Search" />
+      <span :class="$style.count">{{zeroNumber(count)}}</span>
+      <span :class="$style.pages">{{page}}/1667</span>
     </div>
     <section :class="$style.section">
       <ul :class="$style.list">
-        <li :class="$style.item" v-for="dollar in dollars" @mouseover="setPage(dollar.page)">
+        <li :class="$style.item" v-for="dollar in dollars" @mouseover="setPage(dollar.page)" @mouseout="setPage('0000')">
           <span :class="$style.number">{{dollar.key}}</span>
         </li>
       </ul>
     </section>
-    <footer :class="$style.footer">
-      <span :class="$style.phrase">PAGE {{page}} OF 1667 THIS TEN THOUSAND SERIAL NUMBERS ARE PART OF THE ONE MILLION DOLLAR BOOK. THE BOOK CONTAINS TEN THOUSAND PHOTOGRAPHS OF ONE HUNDRED DOLLAR BILLS FOR A TOTAL VALUE OF ONE MILLION UNITED STATES DOLLARS. PRINTED ON 1667 PAGES IN AN EDITION OF 100 NUMBERED AND SIGNED BOOKS. THIS WORK IS PROTECTED BY COPYRIGHT. ANY USE OUTSIDE THE GERMAN COPYRIGHT LAW WITHOUT OBTAINING PRIOR PERMISSION BY SASCHA HUNDORFF IS ILLEGAL. THE PUBLISHER IS RESPONSIBLE FOR CONTENT AND GRAPHICS. ALL RIGHTS RESERVED. THE ONE MILLION DOLLAR BOOK PROJECT IS AN ON DEMAND PRINT PROJECT. THIS DOCUMENT WAS PRINTED IN LOWEST QUALITY ON ONE HUNDRED PERCENT GERMAN RECYCLED PAPER. DATE OF PUBLICATION JULY 12TH 2013 LOS ANGELES CALIFORNIA U.S.A.</span>
-    </footer>
   </div>
 </template>
 
@@ -24,9 +23,10 @@ export default {
     return {
       data: {},
       items: [],
-      search: '',
-      page: '',
+      page: '0000',
+      searchKey: '',
       dollars: [],
+      count: 0,
       timer: null
     }
   },
@@ -39,6 +39,17 @@ export default {
       })
   },
 
+  computed: {
+    search: {
+      get () {
+        return this.searchKey
+      },
+      set (val) {
+        this.searchKey = val.toUpperCase()
+      }
+    }
+  },
+
   methods: {
     async getDollars () {
       let dollars = await axios.get('data/onemilliondollar.json')
@@ -47,6 +58,7 @@ export default {
     set () {
       this.items = Object.keys(this.data).map((k) => this.data[k])
       this.dollars = this.items
+      this.count = this.dollars.length
     },
     setPage (p) {
       this.page = p
@@ -56,10 +68,18 @@ export default {
       this.timer = setTimeout(() => {
         if (this.search.length > 0) {
           this.dollars = this.items.filter(item => (item.key.toLowerCase()).indexOf(this.search.toLowerCase()) > -1)
+          this.count = this.dollars.length
         } else {
           this.dollars = this.items
+          this.count = this.dollars.length
         }
       }, 200)
+    },
+    zeroNumber (number) {
+      let zeros = ''
+      let countLen = number.toString().length
+      for (let i = countLen, l = 5; i < l; i++) { zeros += '0' }
+      return `${zeros}${number}`
     }
   }
 }
@@ -67,13 +87,13 @@ export default {
 
 <style lang="scss" module>
 body {
-  font-family: 'Courier New', 'Open Sans Condensed', sans-serif;
+  font-size: 15px;
 }
 .page {
-  margin: 5em 2em;
+  margin: 2em;
 }
 .header {
-  padding: 2em 0;
+  padding: .5em 0 2em;
 }
 .section {
   display: flex;
@@ -90,27 +110,12 @@ body {
   margin: 5px;
 }
 .number {
-  font-size: 15px;
   display: block;
   &:hover,
   &:active {
     color: red;
     cursor: crosshair;
   }
-}
-.footer {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
-  background: white;
-  padding: 2em;
-}
-.phrase {
-  font-family: Arial, sans-serif;
-  font-weight: 300;
-  font-size: 10px;
 }
 input.filter {
   width: 200px;
@@ -126,6 +131,14 @@ input.filter {
   }
 }
 
+.count {
+  margin-left: 18px;
+}
+
+.pages {
+  margin-left: 18px;
+}
+
 @media (max-width: 460px) {
   .page {
     margin: 0 1em;
@@ -135,9 +148,10 @@ input.filter {
     position: fixed;
     right: 0;
     left: 0;
+    background: white;
   }
   .section {
-    padding: 6em 0 25em;
+    padding: 15em 0 25em;
   }
   .list {
     flex-direction: column;
@@ -148,12 +162,17 @@ input.filter {
   .number {
     font-size: 11vw;
   }
-  .footer {
-    padding: 1em;
-  }
   input.filter {
     width: 100%;
     font-size: 20px;
+    margin-bottom: 15px;
+  }
+  .count,
+  .pages {
+    margin-left: 0;
+    display: block;
+    font-size: 11vw;
+    padding: 5px 0;
   }
 }
 </style>
