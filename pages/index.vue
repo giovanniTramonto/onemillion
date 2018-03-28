@@ -32,8 +32,9 @@ export default {
   },
 
   created () {
-    this.getDollars()
-      .then(this.set)
+    this
+      .init()
+      .then(this.loadOther)
       .catch(error => {
         console.warn(error)
       })
@@ -51,17 +52,25 @@ export default {
   },
 
   methods: {
-    async getDollars () {
-      let dollars = await axios.get('data/onemilliondollar.json')
-      this.data = dollars.data
+    async getDollars (part) {
+      let dollars = await axios.get(`data/dollars${part}.json`)
+      this.addDollars(dollars.data)
     },
-    set () {
-      this.items = Object.keys(this.data).map((k) => this.data[k])
+    init () {
+      return this.getDollars(1)
+    },
+    addDollars (data) {
+      this.items = [...this.items, ...Object.keys(data).map((k) => data[k])]
       this.dollars = this.items
       this.count = this.dollars.length
     },
     setPage (p) {
       this.page = p
+    },
+    loadOther () {
+      for (let i = 2; i <= 4; i++) {
+        this.getDollars(i)
+      }
     },
     filter () {
       clearTimeout(this.timer)

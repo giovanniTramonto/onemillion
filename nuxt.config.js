@@ -22,9 +22,9 @@ module.exports = {
     ]
   },
   /*
-  ** Customize the progress bar color
+  ** No progress bar
   */
-  loading: { color: '#3B8070' },
+  loading: false,
   /*
   ** Build configuration
   */
@@ -46,8 +46,8 @@ module.exports = {
       require('autoprefixer')({
         browsers: ['> 5%']
       })
-    ],
-    publicPath: 'onemillion/'
+    ]
+    // , publicPath: 'onemillion/'
   },
   css: [
     '@/assets/scss/styles.scss'
